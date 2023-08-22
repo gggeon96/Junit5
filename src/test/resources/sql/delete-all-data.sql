@@ -1,3 +1,3 @@
-delete from `users`;
+delete from `users` where 1;
 
-delete from `posts`;
+delete from `posts` where 1;
