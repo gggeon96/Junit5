@@ -1,9 +1,9 @@
 # Toy for test on spring!
 테스트 코드 강의를 보면서 실습해보기 위한 토이 프로젝트입니다.   
 
-- [X] h2를 이용한 repository 테스트
-- [X] h2를 이용한 service 테스트
-- [X] mockmvc를 이용한 controller 테스트
+- [X] h2를 이용한 `repository` 테스트
+- [X] h2를 이용한 `service` 테스트
+- [X] `mockmvc`를 이용한 `controller` 테스트
 - [X] 레이어드 아키텍처의 문제점을 개선하기 위한 패키지 리팩터링
 - [X] 외부 의존성 제거하기
 - [X] 영속성 객체 의존성 제거하기(도메인 중심)
