@@ -42,6 +42,7 @@ public class PostEntity {
                 .id(post.getId())
                 .content(post.getContent())
                 .createdAt(post.getCreatedAt())
+                .modifiedAt(post.getModifiedAt())
                 .writer(UserEntity.fromModel(post.getWriter()))
                 .build();
     }

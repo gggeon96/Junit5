@@ -55,12 +55,12 @@ public class PostServiceTest {
     @Test
     void postUpdateDto_를_이용하여_게시물을_수정할_수_있다() {
         // given
-        PostUpdate postUpdateDto = PostUpdate.builder()
+        PostUpdate postUpdate = PostUpdate.builder()
                 .content("hello world :)")
                 .build();
 
         // when
-        postService.update(1, postUpdateDto);
+        postService.update(1, postUpdate);
 
         // then
         Post post = postService.getById(1);

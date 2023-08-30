@@ -4,11 +4,13 @@ import com.example.demo.user.domain.User;
 import com.example.demo.user.infrastructure.UserEntity;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.Clock;
 
 @Builder
 @Getter
+@ToString
 public class Post {
     private final Long id;
     private final String content;
