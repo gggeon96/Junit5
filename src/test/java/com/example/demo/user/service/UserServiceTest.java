@@ -2,10 +2,10 @@ package com.example.demo.user.service;
 
 import com.example.demo.common.domain.exception.CertificationCodeNotMatchedException;
 import com.example.demo.common.domain.exception.ResourceNotFoundException;
+import com.example.demo.user.domain.User;
 import com.example.demo.user.domain.UserStatus;
 import com.example.demo.user.domain.UserCreate;
 import com.example.demo.user.domain.UserUpdate;
-import com.example.demo.user.infrastructure.UserEntity;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class UserServiceTest {
         String email = "geon1120@gmail.com";
 
         //when
-        UserEntity user = userService.getByEmail(email);
+        User user = userService.getByEmail(email);
 
         //then
         assertThat(user.getNickname()).isEqualTo("geonhyeon");
@@ -62,7 +62,7 @@ public class UserServiceTest {
         //given
 
         //when
-        UserEntity user = userService.getById(1);
+        User user = userService.getById(1);
 
         //then
         assertThat(user.getNickname()).isEqualTo("geonhyeon");
@@ -93,7 +93,7 @@ public class UserServiceTest {
         BDDMockito.doNothing().when(javaMailSender).send(BDDMockito.any(SimpleMailMessage.class));
 
         //when
-        UserEntity user = userService.create(userCreate);
+        User user = userService.create(userCreate);
 
         //then
         assertThat(user.getId()).isNotNull();
@@ -114,7 +114,7 @@ public class UserServiceTest {
         userService.update(1,userUpdateDto);
 
         //then
-        UserEntity user = userService.getById(1);
+        User user = userService.getById(1);
         assertThat(user.getId()).isNotNull();
         assertThat(user.getAddress()).isEqualTo("incheon");
         assertThat(user.getNickname()).isEqualTo("gunnhyeon");
@@ -128,7 +128,7 @@ public class UserServiceTest {
         userService.login(1);
 
         //then
-        UserEntity user = userService.getById(1);
+        User user = userService.getById(1);
         assertThat(user.getLastLoginAt()).isGreaterThan(0L);
         //millis를 이용한 체크는 아직 안된다
 
@@ -142,7 +142,7 @@ public class UserServiceTest {
         //when
 
         //then
-        UserEntity user = userService.getById(2);
+        User user = userService.getById(2);
         assertThat(user.getStatus()).isEqualTo(UserStatus.ACTIVE);
     }
 
