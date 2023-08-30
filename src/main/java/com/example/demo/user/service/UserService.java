@@ -2,6 +2,8 @@ package com.example.demo.user.service;
 
 import com.example.demo.common.domain.exception.CertificationCodeNotMatchedException;
 import com.example.demo.common.domain.exception.ResourceNotFoundException;
+import com.example.demo.common.service.port.ClockHolder;
+import com.example.demo.common.service.port.UuidHolder;
 import com.example.demo.user.domain.User;
 import com.example.demo.user.domain.UserStatus;
 import com.example.demo.user.domain.UserCreate;
@@ -21,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     private final CertificationService certificationService;
+    private final UuidHolder uuidHolder;
+    private final ClockHolder clockHolder;
 
 
     public Optional<User> findById(long id) {
@@ -39,7 +43,7 @@ public class UserService {
 
     @Transactional
     public User create(UserCreate userCreate) {
-        com.example.demo.user.domain.User user = com.example.demo.user.domain.User.from(userCreate);
+        com.example.demo.user.domain.User user = com.example.demo.user.domain.User.from(userCreate,uuidHolder);
         user = userRepository.save(user);
         certificationService.send(userCreate.getEmail(), user.getId(), user.getCertificationCode());
         return user;
@@ -56,7 +60,7 @@ public class UserService {
     @Transactional
     public void login(long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Users", id));
-        user = user.login();
+        user = user.login(clockHolder);
         userRepository.save(user); //저장까지 해줘야한다. 영속성객체라면 알아서 변경을 해주지만 의존성을 끊은 domain객체이기 때문
     }
 
