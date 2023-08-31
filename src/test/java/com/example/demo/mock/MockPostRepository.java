@@ -2,20 +2,17 @@ package com.example.demo.mock;
 
 import com.example.demo.post.domain.Post;
 import com.example.demo.post.service.port.PostRepository;
-import com.example.demo.user.domain.User;
-import lombok.Builder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-@Builder
 public class MockPostRepository implements PostRepository {
     private Long generatedId = 0L;
     private final List<Post> data = new ArrayList<>();
     @Override
     public Optional<Post> findById(long id) {
-        return Optional.empty();
+        return data.stream().filter(item -> item.getId().equals(id)).findAny();
     }
 
     @Override

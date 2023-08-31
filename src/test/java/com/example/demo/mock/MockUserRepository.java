@@ -1,5 +1,6 @@
 package com.example.demo.mock;
 
+import com.example.demo.common.domain.exception.ResourceNotFoundException;
 import com.example.demo.user.domain.User;
 import com.example.demo.user.domain.UserStatus;
 import com.example.demo.user.service.port.UserRepository;
@@ -12,6 +13,11 @@ public class MockUserRepository implements UserRepository {
 
     private Long generatedId = 0L;
     private final List<User> data = new ArrayList<>();
+
+    @Override
+    public User getById(long id) {
+        return findById(id).orElseThrow(() -> new ResourceNotFoundException("Users",id));
+    }
 
     @Override
     public Optional<User> findById(long id) {
