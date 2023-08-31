@@ -1,4 +1,4 @@
-package com.example.demo.user.controller;
+package com.example.demo.medium;
 
 import org.junit.jupiter.api.Test;
 

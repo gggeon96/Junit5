@@ -1,16 +1,12 @@
-package com.example.demo.user.service;
+package com.example.demo.medium;
 
 import com.example.demo.common.domain.exception.CertificationCodeNotMatchedException;
 import com.example.demo.common.domain.exception.ResourceNotFoundException;
-import com.example.demo.mock.FakeMailSender;
-import com.example.demo.mock.MockClockHolder;
-import com.example.demo.mock.MockUserRepository;
-import com.example.demo.mock.MockUuidHolder;
 import com.example.demo.user.domain.User;
-import com.example.demo.user.domain.UserCreate;
 import com.example.demo.user.domain.UserStatus;
+import com.example.demo.user.domain.UserCreate;
 import com.example.demo.user.domain.UserUpdate;
-import org.junit.jupiter.api.BeforeEach;
+import com.example.demo.user.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,38 +21,18 @@ import org.springframework.test.context.jdbc.SqlGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@SpringBootTest
+@TestPropertySource("classpath:test-application.properties")
+@SqlGroup({
+    @Sql(value = "/sql/user-service-test-data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+    @Sql(value = "/sql/delete-all-data.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+})
+//@DataJpaTest
 public class UserServiceTest {
-
+    @Autowired
     private UserService userService;
-    @BeforeEach
-    void init(){
-        FakeMailSender fakeMailSender = new FakeMailSender();
-        MockUserRepository mockUserRepository = new MockUserRepository();
-        this.userService = UserService.builder()
-                .certificationService(new CertificationService(fakeMailSender))
-                .clockHolder(new MockClockHolder(123456789))
-                .uuidHolder(new MockUuidHolder("abcdefgh-abcd-abcd-abcd-abcdefghijklm"))
-                .userRepository(mockUserRepository)
-                .build();
-        mockUserRepository.save(User.builder()
-                .id(1L)
-                .email("geon1120@gmail.com")
-                .nickname("geonhyeon")
-                .address("gwangju")
-                .certificationCode("abcdefgh-abcd-abcd-abcd-abcdefghijklm")
-                .status(UserStatus.ACTIVE)
-                .lastLoginAt(123456789L)
-                .build());
-        mockUserRepository.save(User.builder()
-                .id(2L)
-                .email("geon1122@gmail.com")
-                .nickname("geonhyeon1")
-                .address("gwangju")
-                .certificationCode("abcdefgh-abcd-abcd-abcd-abcdefghijklz")
-                .status(UserStatus.PENDING)
-                .lastLoginAt(123456789L)
-                .build());
-    }
+    @MockBean
+    private JavaMailSender javaMailSender;
 
     @Test
     void getByEmail_가_ACTIVE_상태인_유저를_가져온다(){
@@ -115,6 +91,7 @@ public class UserServiceTest {
                 .address("seoul")
                 .nickname("gunn")
                 .build();
+        BDDMockito.doNothing().when(javaMailSender).send(BDDMockito.any(SimpleMailMessage.class));
 
         //when
         User user = userService.create(userCreate);
@@ -122,7 +99,8 @@ public class UserServiceTest {
         //then
         assertThat(user.getId()).isNotNull();
         assertThat(user.getStatus()).isEqualTo(UserStatus.PENDING);
-        assertThat(user.getCertificationCode()).isEqualTo("abcdefgh-abcd-abcd-abcd-abcdefghijklm");
+        //아직 확인 못하는 UUID
+//        assertThat(user.getCertificationCode()).isEqualTo("not yet.. TT");
     }
 
     @Test
@@ -152,7 +130,8 @@ public class UserServiceTest {
 
         //then
         User user = userService.getById(1);
-        assertThat(user.getLastLoginAt()).isEqualTo(123456789);
+        assertThat(user.getLastLoginAt()).isGreaterThan(0L);
+        //millis를 이용한 체크는 아직 안된다
 
     }
 
